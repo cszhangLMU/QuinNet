@@ -8,7 +8,7 @@ Deep learning approaches have demonstrated remarkable efficacy in medical image 
 </p>
 
 ## Using the code:
-The code is stable while using Python 3.9.13, CUDA >=11.8
+The code is stable while using Python 3.8.3, CUDA >=11.8
 - Clone this repository:
 ```bash
 git clone https://github.com/Truman0o0/QuinNet.git
