@@ -33,49 +33,37 @@ Make sure to put the files as the following structure:
 dataset
 ├── ISIC2018
 |   ├── Training_GroundTruth
-|   |   ├── ISIC_0000000_segmentation.png
 |   │   ├── ...
 |   │
 |   ├── Training_Input
-|   |   ├── ISIC_0000000.jpg
 |   │   ├── ...
 |   │
 |   ├── Validation_GroundTruth
-|   |   ├── ISIC_0000000_segmentation.png
 |   │   ├── ...
 |   │
 |   └── Validation_Input
-|       ├── ISIC_0000000.jpg
 |       ├── ...
 |
 ├── BUSI
 |   ├── train
-|   |   ├── img1.png
-|   |   ├── img1_mask.png
 |   │   ├── ...
 |   │
 |   └── val
-|       ├── img1.png
-|       ├── img1_mask.png
 |       ├── ...
 |
 ├── CVC-ClinicDB
 |   └── PNG
 |       ├── Ground_Truth
-|       |   ├── 1.png
 |       |   ├── ...
 |       |
 |       └── Original
-|           ├── 1.png
 |           ├── ...
 |
 └── COVID-19
     ├── images
-    |   ├── COVID-1.png
     |   ├── ...
     |
     └── masks
-        ├── COVID-1.png
         ├── ...
 ```
 
