@@ -11,8 +11,8 @@ Deep learning approaches have demonstrated remarkable efficacy in medical image 
 The code is stable while using Python 3.9.13, CUDA >=11.8
 - Clone this repository:
 ```bash
-git clone 
-cd 
+git clone https://github.com/Truman0o0/QuinNet.git
+cd QuinNet
 ```
 - To install all the dependencies using conda:
 ```
@@ -70,5 +70,6 @@ dataset
 ## Training
 Train the model.
 ```
-python train.py --dataset <dataset name> --arch UNext --name <exp name> --img_ext .png --mask_ext .png --lr 0.0001 --epochs 500 --input_w 512 --input_h 512 --b 8
+# python train.py --dataset ISIC2018 --arch QuinNet --name ISIC2018 --img_ext .jpg --mask_ext .png --lr 0.0001 --epochs 200 --input_w 512 --input_h 512 --b 8  
+python train.py --dataset <dataset name> --arch QuinNet --name <exp name> --img_ext .png --mask_ext .png --lr 0.0001 --epochs 200 --input_w 512 --input_h 512 --b 8
 ```
