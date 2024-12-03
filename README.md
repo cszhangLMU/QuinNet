@@ -26,6 +26,7 @@ pip install -r requirements.txt
 1) ISIC 2018 - [Link](https://challenge.isic-archive.com/data/)
 2) BUSI - [Link](https://www.kaggle.com/aryashah2k/breast-ultrasound-images-dataset)
 3) CVC-ClinicDB - [Link](https://www.dropbox.com/scl/fi/ky766dwcxt9meq3aklkip/CVC-ClinicDB.rar?rlkey=61xclnrraadf1niqdvldlds93&e=1&dl=0)
+After downloading these datasets, please divide them strictly according to the instructions in our paper.
 
 ## DataFormat
 Make sure to put the files as the following structure:
