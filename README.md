@@ -75,6 +75,6 @@ python train.py --dataset <dataset name> --arch QuinNet --name <exp name> --img_
 ```
 2) Evaluate.
 ```
-# <exp name> - wrist
+# <exp name> - ISIC2018
 python val.py --name <exp name>
 ```
