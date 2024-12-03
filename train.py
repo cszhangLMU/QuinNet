@@ -47,7 +47,7 @@ def parse_args():
                         metavar='N', help='mini-batch size (default: 16)')
     
     # model
-    parser.add_argument('--arch', '-a', metavar='ARCH', default='QuinNet', help='UNext SACA_UNet Test_SACA_UNet,MulEncode_SACA_UNet,Dense_Test_SACA_UNet ,UNet,UNetplus , SACA_UNet_Att,AttUNet, PAttUNet, Resnet34_Unet, MTUNet, SwinUnet, SwinUNetR, nnFormer   第二个 MPS用了注意力 QuinNet ,FCT')
+    parser.add_argument('--arch', '-a', metavar='ARCH', default='QuinNet')
     parser.add_argument('--deep_supervision', default=False, type=str2bool)
     parser.add_argument('--input_channels', default=3, type=int, help='input channels')
     parser.add_argument('--num_classes', default=1, type=int,
@@ -65,8 +65,7 @@ def parse_args():
                         ' (default: BCEDiceLoss)')
     
     # dataset
-    parser.add_argument('--dataset', default='ISIC2018',
-                        help='dataset name   ## ISIC2018 ISIC2018NEW2  BUSI   cvc-clinicdb  COVID-19  ICF, Covid_Infection  Kvasir-SEG  kvasir-instrument')
+    parser.add_argument('--dataset', default='ISIC2018')
     parser.add_argument('--img_ext', default='.jpg',
                         help='image file extension')
     parser.add_argument('--mask_ext', default='.png',
@@ -133,7 +132,6 @@ def train(config, train_loader, model, criterion, optimizer):
                 loss += criterion(output, target)
             loss /= len(outputs)
             iou,dice = iou_score(outputs[-1], target)
-            # 添加
             loss = 0.5*loss + dice
         else:
             if config['arch'] == 'QuinNet':
@@ -143,10 +141,8 @@ def train(config, train_loader, model, criterion, optimizer):
                 #loss = criterion(output, target)+criterion(mspOutput1,TF.resize(target,size=[int(H/2),int(W/2)]))+criterion(mspOutput2,TF.resize(target,size=[int(H/4),int(W/4)]))+criterion(mspOutput3,TF.resize(target,size=[int(H/8),int(W/8)]))+criterion(mspOutput4,TF.resize(target,size=[int(H/16),int(W/16)]))
                 loss = criterion(output, target)+criterion(mspOutput1,target)+criterion(mspOutput2,target)+criterion(mspOutput3,target)+criterion(mspOutput4,target)
                 iou, dice = iou_score(output, target)
-                # 添加
                 loss = 0.5*loss + dice
             elif config['arch'] == 'SkipConnect_SACA_UNet_crop_resize':
-                ##寻找病灶区域
                 targetArea = []
                 for i in range(target.shape[0]):
                     temp = []
@@ -162,11 +158,9 @@ def train(config, train_loader, model, criterion, optimizer):
                 output = model(input,targetArea)
                 loss = criterion(output, target)
                 iou, dice = iou_score(output, target)
-                # 添加
                 loss = 0.5*loss + dice
             else:
                 if config['arch'] == 'nnFormer':
-                    # 调整 input 和 target 的形状
                     input = input.unsqueeze(2)  # 将 (N, H, W) -> (N, C=1, H, W)
                     target = target.unsqueeze(2)  # 将 (N, H, W) -> (N, C=1, H, W)
                 output = model(input)
@@ -174,7 +168,6 @@ def train(config, train_loader, model, criterion, optimizer):
                 #print(target.shape)
                 loss = criterion(output, target)
                 iou, dice = iou_score(output, target)
-                # 添加
                 loss = 0.5*loss + dice
 
         # compute gradient and do optimizing step
@@ -207,7 +200,7 @@ def validate(config, val_loader, model, criterion):
                   'recall': AverageMeter(),
                   'spec': AverageMeter()}
                    
-    metric = SegmentationMetric(config['num_classes'])#有几个分类就填几
+    metric = SegmentationMetric(config['num_classes'])
     # switch to evaluate mode
     model.eval()
 
@@ -239,7 +232,6 @@ def validate(config, val_loader, model, criterion):
                     output = model(input)
                     loss = criterion(output, target)
                     iou, dice = iou_score(output, target)
-                    # 添加
                     loss = 0.5*loss + dice
                 else:
                     output = model(input)
@@ -323,8 +315,8 @@ def main():
     val_dir = ''
     train_mask_dir = ''
     val_mask_dir = ''
-    train_img_ = [] # 训练集中所有的真实图像
-    val_img_ = [] # 所有验证集中真实图像x
+    train_img_ = []
+    val_img_ = []
     if config['dataset'] == 'ISIC2018':
         # Train data loading code
         train_img_ids_ = glob(os.path.join('./dataset/ISIC2018/Training_Input', '*' + '.jpg'))
@@ -357,14 +349,13 @@ def main():
         config['img_ext'] = '.jpg'
     elif config['dataset'] == 'BUSI':
         train_img_ids_ = glob(os.path.join('./dataset/BUSI/train', '*' + '.png'))
-        train_img_ids_ = [os.path.splitext(os.path.basename(p))[0] for p in train_img_ids_] # 训练集中所有图像的文件名，包括mask
-        
+        train_img_ids_ = [os.path.splitext(os.path.basename(p))[0] for p in train_img_ids_]
         for p in train_img_ids_:
             m = p.split('_')
             if m[-1] != 'mask':
                 train_img_.append(m[0])
         val_img_ids_ = glob(os.path.join('./dataset/BUSI/val', '*' + '.png'))
-        val_img_ids_ = [os.path.splitext(os.path.basename(p))[0] for p in val_img_ids_] #验证集中所有图像的文件名，包括mask
+        val_img_ids_ = [os.path.splitext(os.path.basename(p))[0] for p in val_img_ids_]
         
         for p in val_img_ids_:
             m = p.split('_')
@@ -405,8 +396,6 @@ def main():
         train_img_ids_ = glob(os.path.join(train_dir, '*' + '.jpeg'))
         train_img_ids_ = [os.path.splitext(os.path.basename(p))[0] for p in train_img_ids_]
     
-    #print('=========>训练集数据大小{}'.format(len(train_img_ids_)))
-    #print('=========>验证集数据大小{}'.format(len(val_img_ids_)))
     ##train_img_ids, val_img_ids = train_test_split(img_ids, test_size=0.2, random_state=41)
     if config['dataset'] == 'ISIC2018':
         config['input_h'] = 416
@@ -586,11 +575,11 @@ def main():
         model = archsSEMlp.__dict__[config['arch']](config['num_classes'],
                                                config['input_channels'],
                                                config['deep_supervision'])
-    elif config['arch'] == 'SkipConnect_SACA_UNet':#第二个
+    elif config['arch'] == 'SkipConnect_SACA_UNet':
         model = archsSEMlp.__dict__[config['arch']](config['num_classes'],
                                                config['input_channels'],
                                                config['deep_supervision'])
-    elif config['arch'] == 'SkipConnect_SACA_UNet_resize':#第二个
+    elif config['arch'] == 'SkipConnect_SACA_UNet_resize':
         model = archsSEMlp.__dict__[config['arch']](config['num_classes'],
                                                config['input_channels'],
                                                config['deep_supervision'])
@@ -598,11 +587,11 @@ def main():
         model = archsSEMlp.__dict__[config['arch']](config['num_classes'],
                                                config['input_channels'],
                                                config['deep_supervision'])
-    elif config['arch'] == 'MPSAttention_two':#第二个
+    elif config['arch'] == 'MPSAttention_two':
         model = archsSEMlp.__dict__[config['arch']](config['num_classes'],
                                                config['input_channels'],
                                                config['deep_supervision'])
-    elif config['arch'] == 'EncodeNum_SACA_UNet':# 第二个（消融使用）
+    elif config['arch'] == 'EncodeNum_SACA_UNet':
         model = archsSEMlp.__dict__[config['arch']](config['num_classes'],
                                                config['input_channels'],
                                                config['deep_supervision'])                                          
@@ -650,12 +639,6 @@ def main():
         model = MTUNet(num_classes=1)
     elif config['arch'] == 'FCT':
         model = FCT()
-    ###############################################
-    ##加入guide-unext
-    #guide_model = Guide_UNext(num_classes = 1)
-    #model = model.to(device)
-    #guide_model = guide_model.to(device)
-    ################################################
     model = model.to(device)
     params = filter(lambda p: p.requires_grad, model.parameters())
     if config['optimizer'] == 'Adam':
