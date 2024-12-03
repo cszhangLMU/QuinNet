@@ -67,9 +67,14 @@ dataset
         ├── ...
 ```
 
-## Training
-Train the model.
+## Training and Validation
+1) Train the model.
 ```
 # python train.py --dataset ISIC2018 --arch QuinNet --name ISIC2018 --img_ext .jpg --mask_ext .png --lr 0.0001 --epochs 200 --input_w 512 --input_h 512 --b 8  
 python train.py --dataset <dataset name> --arch QuinNet --name <exp name> --img_ext .png --mask_ext .png --lr 0.0001 --epochs 200 --input_w 512 --input_h 512 --b 8
+```
+2) Evaluate.
+```
+# <exp name> - wrist
+python val.py --name <exp name>
 ```
