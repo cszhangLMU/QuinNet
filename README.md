@@ -14,9 +14,9 @@ The code is stable while using Python 3.9.13, CUDA >=11.8
 git clone 
 cd 
 ```
-To install all the dependencies using conda:
+- To install all the dependencies using conda:
 ```
-**conda create -n unext python=3.9.13 -y
+conda create -n unext python=3.9.13 -y
 conda activate QuinNet
 conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 pip install -r requirements.txt
